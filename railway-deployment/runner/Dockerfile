@@ -183,7 +183,12 @@ ARG PY_PACKAGES
 USER root
 
 # Copy JavaScript extras
-COPY --from=javascript-extras /extras/node_modules /opt/runners/task-runner-javascript/node_modules/
+COPY --from=javascript-extras /extras/node_modules /opt/runners/task-runner-javascript/node_modules_extras/
+
+# Mesclar sem sobrescrever os módulos existentes
+RUN cp -rn /opt/runners/task-runner-javascript/node_modules_extras/. \
+           /opt/runners/task-runner-javascript/node_modules/ && \
+    rm -rf /opt/runners/task-runner-javascript/node_modules_extras
 
 # Copy Python extras to virtual environment
 # CRITICAL: Use python3.13 path to match runner's Python version
