@@ -51,8 +51,7 @@ RUN echo "Installing JavaScript packages: ${JS_PACKAGES}" && \
         '{name: $name, description: $desc, private: true, dependencies: $deps}' \
       > package.json && \
       cat package.json && \
-      corepack enable pnpm && \
-      pnpm install --prod --no-lockfile; \
+      npm install --production; \
     else \
       echo '{"name": "task-runner-runtime-extras", "description": "No custom dependencies", "private": true, "dependencies": {}}' > package.json && \
       mkdir -p node_modules; \
@@ -75,15 +74,7 @@ RUN echo "Installing Python packages: ${PY_PACKAGES}" && \
     if [ -n "${PY_PACKAGES}" ] && [ "${PY_PACKAGES}" != "" ]; then \
       echo "${PY_PACKAGES}" | tr ',' '\n' > requirements.txt && \
       cat requirements.txt && \
-      apk add --no-cache \
-        gcc \
-        g++ \
-        gfortran \
-        musl-dev \
-        linux-headers \
-        openblas-dev \
-        lapack-dev && \
-      pip install --no-cache-dir -r requirements.txt; \
+      pip install --prefer-binary --only-binary=:all: --no-cache-dir -r requirements.txt; \
     else \
       touch requirements.txt; \
     fi
